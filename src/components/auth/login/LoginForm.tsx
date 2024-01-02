@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
 import { signIn } from 'aws-amplify/auth';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,8 @@ import { LoginPayload, LoginValidation } from '@/validation/login.validation';
 import { Input } from '../../ui/input';
 
 const LoginForm = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -34,8 +37,9 @@ const LoginForm = () => {
     };
 
     try {
-      const result = await signIn(payload);
-      console.log(result);
+      const { nextStep } = await signIn(payload);
+      console.log(nextStep);
+      if (nextStep?.signInStep == 'DONE') router.push('/profile');
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
