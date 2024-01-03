@@ -14,22 +14,21 @@ export function withAuth<P>(
   Component: React.ComponentType<P>,
 ): React.FC<P & ProtectedComponentProps> {
   return function ProtectedComponent(props: P & ProtectedComponentProps) {
+    const router = useRouter();
     const cognito = useContext(CognitoContext);
     if (!cognito) throw new Error('AWS Cognito context is undefined');
-
-    const router = useRouter();
 
     const { isAuth, user, loading } = cognito;
 
     useEffect(() => {
       const loginRedirect = async () => {
-        if (isAuth === false) {
-          return router.push('/login');
+        if (!user) {
+          router.push('/login');
         }
       };
 
       loginRedirect();
-    }, [isAuth, loading]);
+    }, [user, loading, router]);
 
     if (loading) {
       return <p>Loading....</p>;

@@ -8,7 +8,7 @@ import { withAuth } from '@/hoc/withAuth';
 
 const Profile = () => {
   const cognito = useContext(CognitoContext);
-  if (!cognito) throw new Error('AWS Cognito context is undefined');
+  if (!cognito) throw new Error('AWS Cognito context is null');
 
   const { handleSignout } = cognito;
 

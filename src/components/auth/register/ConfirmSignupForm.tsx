@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
 import {
   ConfirmPassPayload,
   ConfirmSignupFormValidation,
@@ -16,6 +17,8 @@ interface ConfirmSignupFormProps {
 }
 
 const ConfirmSignupForm = ({ username }: ConfirmSignupFormProps) => {
+  const { toast } = useToast();
+
   const router = useRouter();
   const {
     register,
@@ -37,7 +40,15 @@ const ConfirmSignupForm = ({ username }: ConfirmSignupFormProps) => {
       };
 
       const { nextStep } = await confirmSignUp(payload);
-      if (nextStep.signUpStep === 'DONE') return router.push('/login');
+      if (nextStep.signUpStep === 'DONE') {
+        toast({
+          title: 'Congratulations!',
+          description: 'You have successfully registered',
+          variant: 'default',
+        });
+
+        router.push('/login');
+      }
     } catch (e) {
       console.error(e);
     }
