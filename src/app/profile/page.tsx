@@ -1,23 +1,16 @@
 'use client';
 
-import { useContext } from 'react';
+import type { WithAuthenticatorProps } from '@aws-amplify/ui-react';
+import { withAuthenticator } from '@aws-amplify/ui-react';
 
 import { Button } from '@/components/ui/button';
-import { CognitoContext } from '@/context/CognitoProvider';
-import { withAuth } from '@/hoc/withAuth';
 
-const Profile = () => {
-  const cognito = useContext(CognitoContext);
-  if (!cognito) throw new Error('AWS Cognito context is null');
+const Profile = ({ signOut, user }: WithAuthenticatorProps) => (
+  <div className='container my-10'>
+    <p>User is Authenticated</p> <br />
+    <p>{user?.username}</p>
+    <Button onClick={signOut}>Sign out</Button>
+  </div>
+);
 
-  const { handleSignout } = cognito;
-
-  return (
-    <div className='container my-10'>
-      <p>User is Authenticated</p> <br />
-      <Button onClick={() => handleSignout()}>Sign out</Button>
-    </div>
-  );
-};
-
-export default withAuth(Profile);
+export default withAuthenticator(Profile);

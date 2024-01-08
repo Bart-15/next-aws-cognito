@@ -1,5 +1,6 @@
 import './globals.css';
 
+import { withAuthenticator } from '@aws-amplify/ui-react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
