@@ -1,9 +1,22 @@
 'use client';
 
-export default function Home() {
+import { useAuthenticator, withAuthenticator } from '@aws-amplify/ui-react';
+import { useRouter } from 'next/navigation';
+
+import { Button } from '@/components/ui/button';
+
+const Home = () => {
+  const router = useRouter();
+
+  const { user, signOut } = useAuthenticator((context) => [context.user]);
+
   return (
-    <main className='flex min-h-screen flex-col items-center justify-between p-24'>
-      <h1 className='text-2xl'>React Query v5 Template</h1>
+    <main className='flex flex-col items-center justify-between p-24'>
+      <h1 className='text-2xl'>User is Authenticated</h1>
+      <p>Username: {user?.username}</p>
+      <Button onClick={signOut}>Sign out</Button>
     </main>
   );
-}
+};
+
+export default withAuthenticator(Home);
