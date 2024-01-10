@@ -4,6 +4,7 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
+import { withAuth } from '@/hoc/withAuth';
 
 const Profile = () => {
   const router = useRouter();
@@ -16,11 +17,17 @@ const Profile = () => {
 
   return (
     <div className='container my-10'>
-      <p>User is Authenticated</p> <br />
-      <p>{user?.username}</p>
-      <Button onClick={() => handleSignout()}>Sign out</Button>
+      <Button onClick={() => router.back()} className='mb-3'>
+        Go back
+      </Button>
+      <p>User is Authenticated</p>
+      <p>User name: {user?.username}</p>
+      <hr className='my-2' />
+      <Button onClick={() => handleSignout()} className='mb-3'>
+        Sign out
+      </Button>
     </div>
   );
 };
 
-export default Profile;
+export default withAuth(Profile);

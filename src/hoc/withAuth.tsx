@@ -2,10 +2,11 @@
 
 'use client';
 
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useRouter } from 'next/navigation';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 
-import { CognitoContext } from '@/context/CognitoProvider';
+import { CenteredLoadingSpinner } from '@/components/ui/loaidng-spinner';
 
 interface ProtectedComponentProps {
   // Define any specific props for your wrapped component here
@@ -15,25 +16,23 @@ export function withAuth<P>(
 ): React.FC<P & ProtectedComponentProps> {
   return function ProtectedComponent(props: P & ProtectedComponentProps) {
     const router = useRouter();
-    const cognito = useContext(CognitoContext);
-    if (!cognito) throw new Error('AWS Cognito context is undefined');
 
-    const { isAuth, user, loading } = cognito;
+    const { authStatus } = useAuthenticator((context) => [context.authStatus]);
 
     useEffect(() => {
       const loginRedirect = async () => {
-        if (!user) {
-          router.push('/login');
+        if (authStatus === 'unauthenticated') {
+          return router.push('/');
         }
       };
 
       loginRedirect();
-    }, [user, loading, router]);
+    }, [authStatus, router]);
 
-    if (loading) {
-      return <p>Loading....</p>;
+    if (authStatus === 'configuring') {
+      return <CenteredLoadingSpinner size={75} />;
     }
 
-    return user && <Component {...props} />;
+    return authStatus === 'authenticated' && <Component {...props} />;
   };
 }
